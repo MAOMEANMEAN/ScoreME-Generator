@@ -3,6 +3,11 @@
 #include <string>
 #include "Student.hpp"
 
+// Forward declaration for tabulate Color
+namespace tabulate {
+    enum class Color;
+}
+
 class MenuUtils {
 public:
     // Display methods
@@ -24,6 +29,10 @@ public:
     static void printError(const std::string& message);
     static void printWarning(const std::string& message);
     static void printInfo(const std::string& message);
+    
+    // ADDED: New color and display methods
+    static void printColorLegend();
+    static tabulate::Color getGradeColor(const std::string& grade);
     
     // Input methods
     static int getMenuChoice(int maxOptions);

@@ -32,9 +32,52 @@ bool Admin::login() {
     }
 }
 
+// FIXED: Improved showMenu() method
 void Admin::showMenu() {
+    MenuUtils::clearScreen();
+    MenuUtils::printHeader("ADMIN DASHBOARD");
+    
+    std::vector<std::string> adminMenuOptions = {
+        "Student Management (Limited)",
+        "System Information", 
+        "Help & Documentation",
+        "Sign Out"
+    };
+    
+    MenuUtils::printMenu(adminMenuOptions);
+    MenuUtils::printWarning("Note: Limited functionality without student data access.");
+    MenuUtils::printInfo("For full admin features, use the main application flow.");
+    
+    int choice = MenuUtils::getMenuChoice(4);
+    
+    switch (choice) {
+        case 1:
+            MenuUtils::printWarning("Student Management requires data access through main application.");
+            break;
+        case 2:
+            MenuUtils::printInfo("ScoreME Generator v1.0");
+            MenuUtils::printInfo("Features: Student Management, Excel Import/Export, Grade Reports");
+            break;
+        case 3:
+            MenuUtils::printInfo("Default Admin Credentials:");
+            MenuUtils::printInfo("Username: admin");
+            MenuUtils::printInfo("Password: admin123");
+            break;
+        case 4:
+            MenuUtils::printInfo("Signing out from admin dashboard...");
+            return;
+        default:
+            MenuUtils::printError("Invalid choice!");
+            break;
+    }
+    
+    if (choice != 4) {
+        MenuUtils::pauseScreen();
+    }
+}
+
+void Admin::showMenuWithData(std::vector<Student>& students) {
     int choice;
-    std::vector<Student> students = Student::createSampleData(); // Load sample data
     
     do {
         MenuUtils::clearScreen();
@@ -154,6 +197,10 @@ void Admin::addNewStudent(std::vector<Student>& students) {
         return;
     }
     
+    // ADD THESE LINES FOR LOGIN CREDENTIALS
+    std::string username = MenuUtils::getStringInput("Username for login: ");
+    std::string password = MenuUtils::getStringInput("Password for login: ");
+    
     int age = MenuUtils::getIntInput("Age: ");
     std::string gender = MenuUtils::getStringInput("Gender: ");
     std::string dob = MenuUtils::getStringInput("Date of Birth (YYYY-MM-DD): ");
@@ -171,8 +218,10 @@ void Admin::addNewStudent(std::vector<Student>& students) {
         }
     }
     
-    students.emplace_back(studentId, name, age, gender, dob, email, scores);
+    // CREATE STUDENT WITH LOGIN CREDENTIALS
+    students.emplace_back(username, password, studentId, name, age, gender, dob, email, scores);
     MenuUtils::printSuccess("Student added successfully!");
+    MenuUtils::printInfo("Login credentials - Username: " + username + ", Password: " + password);
     
     // Save updated data to Excel
     try {

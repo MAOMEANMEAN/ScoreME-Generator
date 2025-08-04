@@ -87,7 +87,8 @@ private:
         MenuUtils::clearScreen();
         
         if (admin.login()) {
-            admin.showMenu();
+            // FIXED: Use showMenuWithData() method instead of showMenu()
+            admin.showMenuWithData(registeredStudents);
         } else {
             MenuUtils::printError("Admin login failed!");
         }

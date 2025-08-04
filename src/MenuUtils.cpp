@@ -26,6 +26,20 @@ const std::string MenuUtils::CYAN = "\033[36m";
 const std::string MenuUtils::WHITE = "\033[37m";
 const std::string MenuUtils::BOLD = "\033[1m";
 
+// ADDED: Helper function to get grade color
+Color MenuUtils::getGradeColor(const std::string& grade) {
+    if (grade == "A" || grade == "B" || grade == "C") {
+        return Color::green;    // A-C: Green (excellent)
+    }
+    else if (grade == "D" || grade == "E") {
+        return Color::yellow;   // D-E: Orange/Yellow (acceptable)  
+    }
+    else if (grade == "F") {
+        return Color::red;      // F: Red (failing)
+    }
+    return Color::white;        // Default
+}
+
 // Display methods
 void MenuUtils::displayTable(const std::vector<Student>& students) {
     if (students.empty()) {
@@ -51,16 +65,25 @@ void MenuUtils::displayTable(const std::vector<Student>& students) {
     
     table[0].format().font_style({FontStyle::bold}).font_color(Color::cyan);
     
-    // Color rows based on performance
+    // UPDATED: Apply color coding based on new grading system
     for (size_t i = 1; i < table.size(); ++i) {
-        if (students[i-1].getRemark() == "Fail") {
-            table[i].format().font_color(Color::red);
-        } else if (students[i-1].getLetterGrade() == "A") {
-            table[i].format().font_color(Color::green);
+        std::string grade = students[i-1].getLetterGrade();
+        std::string remark = students[i-1].getRemark();
+        
+        // Color the entire row based on grade
+        Color gradeColor = getGradeColor(grade);
+        table[i].format().font_color(gradeColor);
+        
+        // Make failing students more prominent
+        if (remark == "Fail") {
+            table[i].format().font_style({FontStyle::bold});
         }
     }
     
     cout << table << endl;
+    
+    // ADDED: Display color legend
+    printColorLegend();
 }
 
 void MenuUtils::displayStudentDetails(const Student& student) {
@@ -90,14 +113,24 @@ void MenuUtils::displayStudentDetails(const Student& student) {
     
     table[0].format().font_style({FontStyle::bold}).font_color(Color::cyan);
     
-    // Color the remark row
+    // UPDATED: Color the grade and remark rows based on new system
     for (size_t i = 1; i < table.size(); ++i) {
-        if (table[i][0].get_text() == "Remark") {
+        std::string fieldName = table[i][0].get_text();
+        
+        if (fieldName == "Letter Grade") {
+            Color gradeColor = getGradeColor(student.getLetterGrade());
+            table[i].format().font_color(gradeColor).font_style({FontStyle::bold});
+        }
+        else if (fieldName == "Remark") {
             if (student.getRemark() == "Pass") {
-                table[i].format().font_color(Color::green);
+                table[i].format().font_color(Color::green).font_style({FontStyle::bold});
             } else {
-                table[i].format().font_color(Color::red);
+                table[i].format().font_color(Color::red).font_style({FontStyle::bold});
             }
+        }
+        else if (fieldName == "Average Score") {
+            Color gradeColor = getGradeColor(student.getLetterGrade());
+            table[i].format().font_color(gradeColor);
         }
     }
     
@@ -115,6 +148,7 @@ void MenuUtils::displayGradeReport(const std::vector<Student>& students) {
     // Summary statistics
     int totalStudents = students.size();
     int passingStudents = 0;
+    int gradeA = 0, gradeB = 0, gradeC = 0, gradeD = 0, gradeE = 0, gradeF = 0;
     double totalAverage = 0.0;
     
     for (const auto& student : students) {
@@ -122,6 +156,15 @@ void MenuUtils::displayGradeReport(const std::vector<Student>& students) {
             passingStudents++;
         }
         totalAverage += student.getAverageScore();
+        
+        // Count grades
+        std::string grade = student.getLetterGrade();
+        if (grade == "A") gradeA++;
+        else if (grade == "B") gradeB++;
+        else if (grade == "C") gradeC++;
+        else if (grade == "D") gradeD++;
+        else if (grade == "E") gradeE++;
+        else if (grade == "F") gradeF++;
     }
     
     double classAverage = totalAverage / totalStudents;
@@ -130,12 +173,41 @@ void MenuUtils::displayGradeReport(const std::vector<Student>& students) {
     Table summaryTable;
     summaryTable.add_row({"Statistic", "Value"});
     summaryTable.add_row({"Total Students", to_string(totalStudents)});
-    summaryTable.add_row({"Passing Students", to_string(passingStudents)});
-    summaryTable.add_row({"Failing Students", to_string(totalStudents - passingStudents)});
+    summaryTable.add_row({"Passing Students (50+)", to_string(passingStudents)});
+    summaryTable.add_row({"Failing Students (<50)", to_string(totalStudents - passingStudents)});
     summaryTable.add_row({"Pass Rate", to_string(static_cast<int>(passRate * 100) / 100.0) + "%"});
     summaryTable.add_row({"Class Average", to_string(static_cast<int>(classAverage * 100) / 100.0)});
     
+    // ADDED: Grade distribution
+    summaryTable.add_row({"Grade A (90-100)", to_string(gradeA)});
+    summaryTable.add_row({"Grade B (80-89)", to_string(gradeB)});
+    summaryTable.add_row({"Grade C (70-79)", to_string(gradeC)});
+    summaryTable.add_row({"Grade D (60-69)", to_string(gradeD)});
+    summaryTable.add_row({"Grade E (50-59)", to_string(gradeE)});
+    summaryTable.add_row({"Grade F (<50)", to_string(gradeF)});
+    
     summaryTable[0].format().font_style({FontStyle::bold}).font_color(Color::magenta);
+    
+    // Color the grade distribution rows
+    for (size_t i = 1; i < summaryTable.size(); ++i) {
+        std::string field = summaryTable[i][0].get_text();
+        if (field.find("Grade A") == 0 || field.find("Grade B") == 0 || field.find("Grade C") == 0) {
+            summaryTable[i].format().font_color(Color::green);
+        }
+        else if (field.find("Grade D") == 0 || field.find("Grade E") == 0) {
+            summaryTable[i].format().font_color(Color::yellow);
+        }
+        else if (field.find("Grade F") == 0) {
+            summaryTable[i].format().font_color(Color::red);
+        }
+        else if (field.find("Failing") == 0) {
+            summaryTable[i].format().font_color(Color::red);
+        }
+        else if (field.find("Passing") == 0) {
+            summaryTable[i].format().font_color(Color::green);
+        }
+    }
+    
     cout << summaryTable << endl;
     
     printSeparator();
@@ -148,8 +220,17 @@ void MenuUtils::displayFailingStudents(const std::vector<Student>& students) {
         return;
     }
     
-    printError("FAILING STUDENTS (" + to_string(students.size()) + " found):");
+    printError("FAILING STUDENTS (<50 Average) - " + to_string(students.size()) + " found:");
     displayTable(students);
+}
+
+// ADDED: Color legend function
+void MenuUtils::printColorLegend() {
+    cout << "\n" << BOLD << "Grade Color Legend:" << RESET << endl;
+    cout << GREEN << "● A-C: Excellent Performance" << RESET << endl;
+    cout << YELLOW << "● D-E: Acceptable Performance" << RESET << endl;
+    cout << RED << "● F: Failing Performance (<50)" << RESET << endl;
+    cout << endl;
 }
 
 // Menu display methods

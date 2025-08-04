@@ -15,10 +15,11 @@ public:
 
     // Override virtual methods from Person
     bool login() override;
-    void showMenu() override;
+    void showMenu() override;  // Only ONE declaration of showMenu()
     std::string getRole() const override;
 
     // Admin-specific methods
+    void showMenuWithData(std::vector<Student>& students);
     void manageStudents(std::vector<Student>& students);
     void viewAllStudents(const std::vector<Student>& students);
     void addNewStudent(std::vector<Student>& students);
@@ -27,12 +28,12 @@ public:
     void searchStudent(const std::vector<Student>& students);
     void showFailingStudents(const std::vector<Student>& students);
     void sortStudentsByScore(std::vector<Student>& students);
-    
+        
     // Data management methods
     void importExcelData(std::vector<Student>& students, const std::string& filename);
     void exportData(const std::vector<Student>& students, const std::string& filename);
     void backupData(const std::vector<Student>& students);
-    
+        
     // Utility methods
     bool isValidStudentId(const std::string& id, const std::vector<Student>& students);
     bool isStudentExists(const std::string& name, const std::vector<Student>& students);
