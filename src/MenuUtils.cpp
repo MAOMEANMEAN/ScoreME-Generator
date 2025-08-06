@@ -246,26 +246,70 @@ void MenuUtils::printMenu(const std::vector<std::string>& items) {
     cout << table << endl;
 }
 
+// Add this to your MenuUtils.cpp file - replace the existing printWelcome() function
+
 void MenuUtils::printWelcome() {
-    clearScreen();
-    printColored("╔══════════════════════════════════════╗", CYAN);
-    printColored("║         ISTAD Pre-Gen4 Group         ║", CYAN);
-    printColored("╚══════════════════════════════════════╝", CYAN);
-    cout << endl;
+    system("cls");
     
-    // Simulate loading delay
-    printInfo("Loading...");
+    // ISTAD PRE-GEN4 with asterisk borders
+    string text = R"(
+ ██╗███████╗████████╗ █████╗ ██████╗     ██████╗ ██████╗ ███████╗      ██████╗ ███████╗███╗   ██╗██╗  ██╗
+ ██║██╔════╝╚══██╔══╝██╔══██╗██╔══██╗    ██╔══██╗██╔══██╗██╔════╝     ██╔════╝ ██╔════╝████╗  ██║██║  ██║
+ ██║███████╗   ██║   ███████║██║  ██║    ██████╔╝██████╔╝█████╗       ██║  ███╗█████╗  ██╔██╗ ██║███████║
+ ██║╚════██║   ██║   ██╔══██║██║  ██║    ██╔═══╝ ██╔══██╗██╔══╝       ██║   ██║██╔══╝  ██║╚██╗██║╚════██║
+ ██║███████║   ██║   ██║  ██║██████╔╝    ██║     ██║  ██║███████╗     ╚██████╔╝███████╗██║ ╚████║     ██║
+ ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═════╝     ╚═╝     ╚═╝  ╚═╝╚══════╝      ╚═════╝ ╚══════╝╚═╝  ╚═══╝     ╚═╝
+)";
+    cout << "\033[92m" << text << "\033[0m" << endl;
+cout << endl;
+
+// Loading animation
+cout << BLUE << "Loading";
+for (int i = 0; i < 3; i++) {
 #ifdef _WIN32
-    Sleep(2000);  // Windows Sleep function (milliseconds)
+    Sleep(800);  // Windows Sleep function (milliseconds)
+#else
+    system("sleep 1");
+#endif
+    cout << ".";
+    cout.flush();
+}
+cout << RESET << endl;
+
+// Wait for 2 seconds
+#ifdef _WIN32
+    Sleep(2000);
 #else
     system("sleep 2");
 #endif
     
-    clearScreen();
-    printColored("╔══════════════════════════════════════╗", GREEN);
-    printColored("║      Welcome TO ScoreME Generator    ║", GREEN);
-    printColored("╚══════════════════════════════════════╝", GREEN);
+#ifdef _WIN32
+    Sleep(2000);
+#else
+    usleep(2000000);
+#endif
+    
+    system("cls");
+    
+    // Welcome message with hash borders
+    cout << GREEN << endl;
+    cout << "#############################################################################" << endl;
+    cout << "#                                                                           #" << endl;
+    cout << "#                      WELCOME TO SCOREME GENERATOR                         #" << endl;
+    cout << "#                                                                           #" << endl;
+    cout << "#                   Student Grade Management System                         #" << endl;
+    cout << "#                                                                           #" << endl;
+    cout << "#############################################################################" << endl;
+    cout << RESET << endl;
+    
+    cout << YELLOW << "                  Developed by ISTAD Pre-Gen4 GroupI" << RESET << endl;
     cout << endl;
+    
+#ifdef _WIN32
+    Sleep(2000);
+#else
+    usleep(2000000);
+#endif
 }
 
 void MenuUtils::printMainMenu() {
@@ -279,6 +323,7 @@ void MenuUtils::printMainMenu() {
     
     printMenu(mainMenu);
 }
+
 
 void MenuUtils::printAdminMenu() {
     printHeader("ADMIN DASHBOARD");
