@@ -251,67 +251,124 @@ void MenuUtils::printMenu(const std::vector<std::string>& items) {
 void MenuUtils::printWelcome() {
     system("cls");
     
-    // ISTAD PRE-GEN4 with asterisk borders
-    string text = R"(
- ██╗███████╗████████╗ █████╗ ██████╗     ██████╗ ██████╗ ███████╗      ██████╗ ███████╗███╗   ██╗██╗  ██╗
- ██║██╔════╝╚══██╔══╝██╔══██╗██╔══██╗    ██╔══██╗██╔══██╗██╔════╝     ██╔════╝ ██╔════╝████╗  ██║██║  ██║
- ██║███████╗   ██║   ███████║██║  ██║    ██████╔╝██████╔╝█████╗       ██║  ███╗█████╗  ██╔██╗ ██║███████║
- ██║╚════██║   ██║   ██╔══██║██║  ██║    ██╔═══╝ ██╔══██╗██╔══╝       ██║   ██║██╔══╝  ██║╚██╗██║╚════██║
- ██║███████║   ██║   ██║  ██║██████╔╝    ██║     ██║  ██║███████╗     ╚██████╔╝███████╗██║ ╚████║     ██║
- ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═════╝     ╚═╝     ╚═╝  ╚═╝╚══════╝      ╚═════╝ ╚══════╝╚═╝  ╚═══╝     ╚═╝
-)";
-    cout << "\033[92m" << text << "\033[0m" << endl;
-cout << endl;
+    // Center spacing for console (adjust if needed)
+    cout << string(10, '\n'); // Top spacing to center vertically
+    
+    // ISTAD PRE-GEN4 with character-by-character animation
+    string text = R"(  ██╗███████╗████████╗ █████╗ ██████╗     ██████╗ ██████╗ ███████╗      ██████╗ ███████╗███╗   ██╗██╗  ██╗
+  ██║██╔════╝╚══██╔══╝██╔══██╗██╔══██╗    ██╔══██╗██╔══██╗██╔════╝     ██╔════╝ ██╔════╝████╗  ██║██║  ██║
+  ██║███████╗   ██║   ███████║██║  ██║    ██████╔╝██████╔╝█████╗       ██║  ███╗█████╗  ██╔██╗ ██║███████║
+  ██║╚════██║   ██║   ██╔══██║██║  ██║    ██╔═══╝ ██╔══██╗██╔══╝       ██║   ██║██╔══╝  ██║╚██╗██║╚════██║
+  ██║███████║   ██║   ██║  ██║██████╔╝    ██║     ██║  ██║███████╗     ╚██████╔╝███████╗██║ ╚████║     ██║
+  ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═════╝     ╚═╝     ╚═╝  ╚═╝╚══════╝      ╚═════╝ ╚══════╝╚═╝  ╚═══╝     ╚═╝)";
 
-// Loading animation
-cout << BLUE << "Loading";
-for (int i = 0; i < 3; i++) {
-#ifdef _WIN32
-    Sleep(800);  // Windows Sleep function (milliseconds)
-#else
-    system("sleep 1");
-#endif
-    cout << ".";
-    cout.flush();
-}
-cout << RESET << endl;
-
-// Wait for 2 seconds
-#ifdef _WIN32
-    Sleep(2000);
-#else
-    system("sleep 2");
-#endif
+    // Add leading spaces to center horizontally
+    cout << "        "; // Adjust spacing as needed
     
-#ifdef _WIN32
-    Sleep(2000);
-#else
-    usleep(2000000);
-#endif
+    cout << "\033[94m"; // Green color like your original
     
-    system("cls");
-    
-    // Welcome message with hash borders
-    cout << GREEN << endl;
-    cout << "#############################################################################" << endl;
-    cout << "#                                                                           #" << endl;
-    cout << "#                      WELCOME TO SCOREME GENERATOR                         #" << endl;
-    cout << "#                                                                           #" << endl;
-    cout << "#                   Student Grade Management System                         #" << endl;
-    cout << "#                                                                           #" << endl;
-    cout << "#############################################################################" << endl;
-    cout << RESET << endl;
-    
-    cout << YELLOW << "                  Developed by ISTAD Pre-Gen4 GroupI" << RESET << endl;
+    // Animate each character
+    for (int i = 0; i < text.length(); i++) {
+        if (text[i] == '\n') {
+            cout << text[i];
+            cout << "        "; // Add spacing for next line
+            #ifdef _WIN32
+                Sleep(100); // Pause at line breaks
+            #else
+                usleep(200);
+            #endif
+        } else {
+            cout << text[i];
+            cout.flush();
+            
+            // Different speeds for different characters
+            if (text[i] == '█') {
+                #ifdef _WIN32
+                    Sleep(30); // Slower for blocks
+                #else
+                    usleep(30000);
+                #endif
+            } else if (text[i] != ' ') {
+                #ifdef _WIN32
+                    Sleep(15); // Normal speed
+                #else
+                    usleep(15000);
+                #endif
+            }
+        }
+    }
+    cout << "\033[0m" << endl;
     cout << endl;
-    
-#ifdef _WIN32
-    Sleep(2000);
-#else
-    usleep(2000000);
-#endif
-}
 
+    // Centered loading animation
+    cout << "                                               "; // Center the loading text
+    cout << RED << "Loading";
+    
+    for (int i = 0; i < 3; i++) {
+        #ifdef _WIN32
+            Sleep(400);  // Windows Sleep function (milliseconds)
+        #else
+            system("sleep 1");
+        #endif
+        cout << ".";
+        cout.flush();
+    }
+    cout << RESET << endl;
+
+    // Wait for 2 seconds
+    #ifdef _WIN32
+        Sleep(2000);
+    #else
+        system("sleep 2");
+    #endif
+
+    #ifdef _WIN32
+        Sleep(2000);
+    #else
+        usleep(2000000);
+    #endif
+
+    system("cls");
+
+    // Simple welcome message with hash borders (no animation) - CENTERED
+    cout << GREEN << endl;
+    cout << "                            #############################################################################" << endl;
+    cout << "                            #                                                                           #" << endl;
+    cout << "                            #                      WELCOME TO SCOREME GENERATOR                         #" << endl;
+    cout << "                            #                                                                           #" << endl;
+    cout << "                            #                   Student Grade Management System                         #" << endl;
+    cout << "                            #                                                                           #" << endl;
+    cout << "                            #############################################################################" << endl;
+    cout << RESET << endl;
+
+    // Small delay before developer credit
+    #ifdef _WIN32
+        Sleep(1000);
+    #else
+        usleep(1000000);
+    #endif
+
+    // Animated developer credit - CENTERED
+    cout << YELLOW << "                                           ";
+    string developer = "Developed by ISTAD Pre-Gen4 GroupI";
+    for (int i = 0; i < developer.length(); i++) {
+        cout << developer[i];
+        cout.flush();
+        #ifdef _WIN32
+            Sleep(40);
+        #else
+            usleep(40000);
+        #endif
+    }
+    cout << RESET << endl;
+    cout << endl;
+
+    #ifdef _WIN32
+        Sleep(2000);
+    #else
+        usleep(2000000);
+    #endif
+}
 void MenuUtils::printMainMenu() {
     printHeader("MAIN MENU");
     

@@ -9,15 +9,6 @@
 #include "MenuUtils.hpp"
 
 using namespace std;
-// this is for testing purpose 
-void displayMenuTest(){
-       cout<<"     ____                     "<<endl; 
-       cout<<" / ___|  ___ ___  _ __ ___ "<<endl; 
-       cout<<" \\___ \\ / __/ _ \\| '__/ _ \\"<<endl; 
-       cout<<" ___) | (_| (_) | | |  __/"<<endl; 
-       cout<<" |____/ \\___\\___/|_|  \\___|"<<endl; 
-}
-
 
 class ScoreMEApp {
 private:
@@ -143,7 +134,7 @@ void createSampleDataFiles() {
 }
 
 int main(int argc, char* argv[]) {
-    displayMenuTest();
+    
     try {
         // Check if we're being called to create sample data
         if (argc > 1 && string(argv[1]) == "--create-sample-data") {
